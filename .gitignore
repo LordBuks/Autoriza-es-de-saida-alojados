@@ -1,79 +1,45 @@
-# -----------------------------------------------------------------------------
-# Arquivo .gitignore Otimizado para Projeto JavaScript/TypeScript
-# Tecnologias: Vite, pnpm, Firebase, Vercel
-# -----------------------------------------------------------------------------
-
-# Logs e Debug
-# Ignora logs de execução e debug
+# Logs
 logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
 pm-debug.log*
 
-# Diretórios de Dependências
-# node_modules é o diretório principal de dependências
+# Dependency directories
 node_modules/
-# Ignora caches de dependências
-.npm
-.yarn/
-.pnpm-store
+pnpm-lock.yaml
 
-# Arquivos de Lock de Dependências
-# Estes DEVEM ser versionados para garantir a reprodutibilidade do build
-# pnpm-lock.yaml
-
-# Build e Produção
-# Ignora os diretórios de saída de build (Vite/outros)
-/dist
-/build
-/out
-/output
-/tmp
-/temp
-# Ignora diretórios de cobertura de testes
+# Testing
 /coverage
 /.nyc_output
 
-# Configurações Locais e Variáveis de Ambiente (CRUCIAL PARA SEGURANÇA)
-# Ignora todos os arquivos .env que podem conter segredos e chaves de API
+# Production
+/build
+/dist
+
+# Miscellaneous
+.DS_Store
 .env
-.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.DS_Store # Arquivo de metadados do macOS
 
-# Específicos do TypeScript
-# Ignora arquivos de cache de build do TypeScript
-*.tsbuildinfo
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# Específicos do Vite
-# Ignora o diretório de cache do Vite
+# Local machine files
+*.swp
+*.swo
+
+# Vite specific
 .vite/
 
-# Específicos do Firebase
-# Ignora diretórios e logs de debug do Firebase local
+# Firebase specific
 .firebase/
 firebase-debug.log
 firebase-debug.log.json
 
-# Específicos do Vercel
-# Ignora diretório de cache e configuração local do Vercel
+# Vercel specific
 .vercel/
-
-# IDEs e Editores
-# VS Code
-.vscode/
-# JetBrains (IntelliJ, WebStorm, etc.)
-.idea/
-# Sublime Text
-*.sublime-project
-*.sublime-workspace
-# Outros
-*.swp
-*.swo

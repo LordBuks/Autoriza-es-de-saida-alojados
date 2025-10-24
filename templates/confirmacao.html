@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://saidabase.vercel.app https://sistema-de-autorizacoes.firebaseapp.com https://sistema-de-autorizacoes.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.googleapis.com wss:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.googleusercontent.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'self' https://www.google.com https://www.gstatic.com;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Autorização - SC Internacional</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .confirmacao-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background-color: #cc0d2e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .detalhes {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .detalhes p {
+            margin: 8px 0;
+        }
+        
+        .botoes {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn-confirmar {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .btn-recusar {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+            margin-left: 10px;
+        }
+        
+        .mensagem {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .sucesso {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .erro {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        @media (max-width: 600px) {
+            .botoes {
+                flex-direction: column;
+            }
+            
+            .btn-confirmar, .btn-recusar {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmacao-container">
+        <div class="header">
+            <h1>Sport Club Internacional</h1>
+            <h2>Confirmação de Autorização</h2>
+        </div>
+        
+        <div id="conteudo">
+            <div id="detalhes" class="detalhes">
+                <h3>Detalhes da Solicitação</h3>
+                <p><strong>Atleta:</strong> <span id="nome-atleta"></span></p>
+                <p><strong>Categoria:</strong> <span id="categoria-atleta"></span></p>
+                <p><strong>Data de Saída:</strong> <span id="data-saida"></span></p>
+                <p><strong>Data de Retorno:</strong> <span id="data-retorno"></span></p>
+                <p><strong>Motivo/Destino:</strong> <span id="motivo-destino"></span></p>
+                <p><strong>Responsável:</strong> <span id="nome-responsavel"></span></p>
+            </div>
+            
+            <p>Você, como responsável pelo atleta, confirma a autorização de saída conforme os detalhes acima?</p>
+            
+            <div class="botoes">
+                <button id="btn-confirmar" class="btn-confirmar">Confirmar Autorização</button>
+                <button id="btn-recusar" class="btn-recusar">Recusar Autorização</button>
+            </div>
+            
+            <div id="mensagem" class="mensagem"></div>
+        </div>
+    </div>
+    
+    <!-- Scripts necessários -->
+    <script type="module" src="../js/autorizacao-service.js"></script>
+    <script src="../js/confirmacao-service.js"></script>
+    
+    <script>
+        // Função para obter parâmetros da URL
+        function obterParametroURL(nome) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(nome);
+        }
+        
+        // Função para exibir mensagem
+        function exibirMensagem(texto, tipo) {
+            const mensagemEl = document.getElementById('mensagem');
+            mensagemEl.textContent = texto;
+            mensagemEl.className = `mensagem ${tipo}`;
+            mensagemEl.style.display = 'block';
+        }
+        
+        // Função para carregar os detalhes da solicitação
+        function carregarDetalhes() {
+            const token = obterParametroURL('token');
+            const id = obterParametroURL('id');
+            
+            if (!token || !id) {
+                exibirMensagem('Link de confirmação inválido ou expirado.', 'erro');
+                return;
+            }
+            
+            // Recuperar solicitações do localStorage
+            const solicitacoes = JSON.parse(localStorage.getItem('solicitacoes')) || [];
+            const solicitacao = solicitacoes.find(s => s.id === id);
+            
+            if (!solicitacao) {
+                exibirMensagem('Solicitação não encontrada.', 'erro');
+                return;
+            }
+            
+            // Preencher os detalhes na página
+            document.getElementById('nome-atleta').textContent = solicitacao.nome;
+            document.getElementById('categoria-atleta').textContent = solicitacao.categoria;
+            document.getElementById('data-saida').textContent = formatarData(new Date(solicitacao.data_saida)) + ' às ' + solicitacao.horario_saida;
+            document.getElementById('data-retorno').textContent = formatarData(new Date(solicitacao.data_retorno)) + ' às ' + solicitacao.horario_retorno;
+            document.getElementById('motivo-destino').textContent = solicitacao.motivo_destino;
+            document.getElementById('nome-responsavel').textContent = solicitacao.nome_responsavel;
+            
+            // Configurar botões
+            document.getElementById('btn-confirmar').addEventListener('click', () => confirmarAutorizacao(token));
+            document.getElementById('btn-recusar').addEventListener('click', () => recusarAutorizacao(token));
+        }
+        
+        // Função para confirmar autorização
+        function confirmarAutorizacao(token) {
+            const confirmacaoService = new ConfirmacaoService();
+            const resultado = confirmacaoService.processarConfirmacao(token, obterIP());
+            
+            if (resultado.sucesso) {
+                exibirMensagem('Autorização confirmada com sucesso! Obrigado pela confirmação.', 'sucesso');
+                document.querySelector('.botoes').style.display = 'none';
+            } else {
+                exibirMensagem(resultado.mensagem, 'erro');
+            }
+        }
+        
+        // Função para recusar autorização
+        function recusarAutorizacao(token) {
+            const confirmacaoService = new ConfirmacaoService();
+            const resultado = confirmacaoService.recusarConfirmacao(token, obterIP());
+            
+            exibirMensagem('Autorização recusada. A solicitação foi cancelada.', 'erro');
+            document.querySelector('.botoes').style.display = 'none';
+        }
+        
+        // Função para obter IP (simulado)
+        function obterIP() {
+            return '127.0.0.1';
+        }
+        
+        // Função para formatar data
+        function formatarData(data) {
+            return data.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+        
+        // Carregar detalhes quando a página for carregada
+        document.addEventListener('DOMContentLoaded', carregarDetalhes);
+    </script>
+    <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 VampTech Ltda. Todos os direitos reservados.</p>
+</body>
+</html>

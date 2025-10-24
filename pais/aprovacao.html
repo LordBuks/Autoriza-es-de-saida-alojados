@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aprovação de Saída - SC Internacional</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --vermelho-inter: #cc0d2e;
+      --branco: #ffffff;
+      --cinza-claro: #f8f9fa;
+      --cinza-medio: #e9ecef;
+      --cinza-escuro: #6c757d;
+      --preto: #212529;
+      --verde: #28a745;
+      --vermelho: #dc3545;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: var(--cinza-claro );
+      color: var(--preto);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      background-color: var(--branco);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px 0;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header-logo {
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    
+    .header-title {
+      color: var(--vermelho-inter);
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+    
+    .card {
+      background-color: var(--branco);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .card-title {
+      color: var(--vermelho-inter);
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--vermelho-inter);
+      padding-bottom: 10px;
+    }
+    
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    
+    .info-group {
+      flex: 1;
+      min-width: 250px;
+      margin-bottom: 15px;
+      padding-right: 15px;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: var(--cinza-escuro);
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      font-size: 1.1rem;
+    }
+    
+    .timestamp {
+      background-color: var(--cinza-claro);
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      color: var(--cinza-escuro);
+    }
+    
+    .audit-info {
+      background-color: #f8f9fa;
+      border-left: 4px solid var(--vermelho-inter);
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .message-box {
+      background-color: #e63946;
+      border: 1px solid #c1121f;
+      color: #ffffff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--preto);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--cinza-medio);
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: var(--vermelho-inter);
+      outline: none;
+    }
+    
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.3s, transform 0.2s;
+      width: 48%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .btn-approve {
+      background-color: var(--verde);
+      color: var(--branco);
+    }
+    
+    .btn-approve:hover {
+      background-color: #218838;
+    }
+    
+    .btn-reject {
+      background-color: var(--vermelho);
+      color: var(--branco);
+    }
+    
+    .btn-reject:hover {
+      background-color: #c82333;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      color: var(--cinza-escuro);
+      font-size: 0.9rem;
+    }
+    
+    .legal-notice {
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+      color: var(--cinza-escuro);
+    }
+    
+    .error-message {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    
+    .success-message {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .header-logo {
+        height: 80px;
+      }
+      
+      .header-title {
+        font-size: 1.5rem;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+  <!-- Content Security Policy (CSP) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://saidabase.vercel.app https://sistema-de-autorizacoes.firebaseapp.com https://sistema-de-autorizacoes.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.googleapis.com wss:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.googleusercontent.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'self' https://www.google.com https://www.gstatic.com;">
+
+  <!-- Firebase SDK (Atualizado para versão 9.x com compatibilidade ) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts do sistema -->
+  <script type="module" type="module" src="../js/firebase-config.ts"></script>
+  <script src="../js/auditoria-service.js"></script>
+  <script src="./aprovacao.js"></script>
+</head>
+<body>
+  <header class="header">
+    <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="header-logo">
+    <h1 class="header-title">Sistema de Autorizações Digitais</h1>
+  </header>
+
+  <div class="container">
+    <!-- Tela de carregamento -->
+    <div id="loading" class="card">
+      <div class="loading">
+        <p>Carregando dados da solicitação...</p>
+      </div>
+    </div>
+    
+    <!-- Mensagem de erro -->
+    <div id="error-container" class="card hidden">
+      <h2 class="card-title">Erro ao Carregar Solicitação</h2>
+      <div class="error-message" id="error-message">
+        Ocorreu um erro ao carregar os dados da solicitação. Por favor, verifique o link ou entre em contato com o Serviço Social.
+      </div>
+    </div>
+    
+    <!-- Mensagem de sucesso após decisão -->
+    <div id="success-container" class="card hidden">
+      <h2 class="card-title">Decisão Registrada com Sucesso</h2>
+      <div class="success-message" id="success-message">
+        Sua decisão foi registrada com sucesso. Obrigado por utilizar o Sistema de Autorizações Digitais.
+      </div>
+    </div>
+    
+    <!-- Conteúdo principal -->
+    <div id="main-content" class="card hidden">
+      <h2 class="card-title">Aprovação de Saída do Atleta</h2>
+      
+      <div class="audit-info">
+        <p><strong>Código da Solicitação:</strong> <span id="solicitacao-id">Carregando...</span></p>
+        <p><strong>Data de Geração:</strong> <span id="data-geracao">Carregando...</span></p>
+        <p><strong>Responsável:</strong> <span id="nome-responsavel">Carregando...</span></p>
+      </div>
+      
+      <div class="message-box">
+        <p><strong>Prezado(a ) <span id="saudacao-responsavel">Responsável</span>,</strong></p>
+        <p>O atleta <span id="nome-atleta-mensagem"></span> solicitou autorização para sair do clube. Por favor, verifique os detalhes abaixo e aprove ou reprove esta solicitação. Sua decisão será registrada e auditada pelo sistema.</p>
+      </div>
+      
+      <h3 style="margin-bottom: 15px;">Dados do Atleta</h3>
+      <div class="info-row">
+        <div class="info-group">
+          <div class="info-label">Nome:</div>
+          <div class="info-value" id="nome-atleta">Carregando...</div>
+        </div>
+        <div class="info-group">
+          <div class="info-label">Categoria:</div>
+          <div class="info-value" id="categoria-atleta">Carregando...</div>
+        </div>
+      </div>
+      
+      <div class="info-row">
+        <div class="info-group">
+          <div class="info-label">Telefone:</div>
+          <div class="info-value" id="telefone-atleta">Carregando...</div>
+        </div>
+      </div>
+      
+      <h3 style="margin: 20px 0 15px;">Detalhes da Saída</h3>
+      <div class="info-row">
+        <div class="info-group">
+          <div class="info-label">Data/Hora Saída:</div>
+          <div class="info-value" id="data-hora-saida">Carregando...</div>
+        </div>
+        <div class="info-group">
+          <div class="info-label">Data/Hora Retorno:</div>
+          <div class="info-value" id="data-hora-retorno">Carregando...</div>
+        </div>
+      </div>
+      
+      <div class="info-row">
+        <div class="info-group">
+          <div class="info-label">Motivo/Destino:</div>
+          <div class="info-value" id="motivo-destino">Carregando...</div>
+        </div>
+      </div>
+      
+      <div class="timestamp">
+        <p>Data e hora atual: <span id="current-timestamp">Carregando...</span></p>
+      </div>
+      
+      <div class="form-group">
+        <label for="observacao" class="form-label">Observação (opcional):</label>
+        <textarea id="observacao" class="form-control" rows="3" placeholder="Adicione uma observação sobre sua decisão..."></textarea>
+      </div>
+      
+      <div class="legal-notice">
+        <p><strong>Aviso Legal:</strong> Ao clicar em "Aprovar" ou "Reprovar", você declara ser o responsável legal pelo atleta e autoriza, de forma clara e consciente, o registro da sua decisão. Essa autorização será armazenada com segurança e está de acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD).</p>
+      </div>
+      
+      <div class="btn-group">
+        <button id="btn-aprovar" class="btn btn-approve">APROVAR SAÍDA</button>
+        <button id="btn-reprovar" class="btn btn-reject">REPROVAR SAÍDA</button>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>Sistema de Autorizações Digitais - SC Internacional</p>
+    </div>
+  </div>
+  <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 TechVamp</p>
+</body>
+</html>
+
+

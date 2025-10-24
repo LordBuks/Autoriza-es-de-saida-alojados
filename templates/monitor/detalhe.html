@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhe da Solicitação - SC Internacional</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  
+  <!-- Content Security Policy (CSP) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://saidabase.vercel.app https://sistema-de-autorizacoes.firebaseapp.com https://sistema-de-autorizacoes.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.googleapis.com wss:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.googleusercontent.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'self' https://www.google.com https://www.gstatic.com;">
+
+  <!-- Firebase SDK (Atualizado para versão 9.x com compatibilidade  ) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header class="header">
+    <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="header-logo">
+    <h1 class="header-title">Sistema de Autorizações Digitais</h1>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title">Detalhes da Solicitação</h2>
+      
+      <div id="detalhe-solicitacao">
+        <div class="auth-details">
+          <h3>Dados do Atleta</h3>
+          <p><strong>Nome:</strong> <span id="nome-atleta">Carregando...</span></p>
+          <p><strong>Categoria:</strong> <span id="categoria-atleta">Carregando...</span></p>
+          <p><strong>Data de Nascimento:</strong> <span id="data-nascimento">Carregando...</span></p>
+          <p><strong>Telefone:</strong> <span id="telefone-atleta">Carregando...</span></p>
+          
+          <h3>Dados da Solicitação</h3>
+          <p><strong>Data de Saída:</strong> <span id="data-saida">Carregando...</span></p>
+          <p><strong>Horário de Saída:</strong> <span id="horario-saida">Carregando...</span></p>
+          <p><strong>Data de Retorno:</strong> <span id="data-retorno">Carregando...</span></p>
+          <p><strong>Horário de Retorno:</strong> <span id="horario-retorno">Carregando...</span></p>
+          <p><strong>Motivo/Destino:</strong> <span id="motivo-destino">Carregando...</span></p>
+          
+          <h3>Dados do Responsável</h3>
+          <p><strong>Nome:</strong> <span id="nome-responsavel">Carregando...</span></p>
+          <p><strong>Telefone:</strong> <span id="telefone-responsavel">Carregando...</span></p>
+          
+          <h3>Status da Solicitação</h3>
+          <p><strong>Status Geral:</strong> <span id="status-geral" class="badge">Carregando...</span></p>
+          <p><strong>Status Pais:</strong> <span id="status-pais" class="badge">Carregando...</span></p>
+          <p><strong>Status Supervisor:</strong> <span id="status-supervisor" class="badge">Carregando...</span></p>
+          <p><strong>Data da Aprovação Supervisor:</strong> <span id="data-aprovacao-supervisor">Carregando...</span></p>
+          <p><strong>Status Serviço Social:</strong> <span id="status-servico-social" class="badge">Carregando...</span></p>
+          <p><strong>Data da Aprovação Serviço Social:</strong> <span id="data-aprovacao-servico-social">Carregando...</span></p>
+          <p><strong>Status Monitor:</strong> <span id="status-monitor" class="badge">Carregando...</span></p>
+          <p><strong>Status Final:</strong> <span id="status-final" class="badge">Carregando...</span></p>
+        </div>
+        
+        <div class="auth-actions">
+          <button id="btn-enviar-whatsapp" class="btn btn-primary">Enviar Mensagem ao Responsável</button>
+          <button id="btn-arquivar" class="btn btn-secondary">Arquivar</button>
+        </div>
+      </div>
+      
+      <!-- Modal para mensagem WhatsApp -->
+      <div id="mensagem-whatsapp" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5 ); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%;">
+          <h3>Mensagem para WhatsApp</h3>
+          <textarea id="texto-whatsapp" rows="10" style="width: 100%; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+          <div style="text-align: right;">
+            <button id="btn-copiar" class="btn btn-secondary" style="margin-right: 10px;">Copiar</button>
+            <button id="btn-abrir-whatsapp" class="btn btn-success" style="margin-right: 10px;">Abrir WhatsApp</button>
+            <button id="btn-fechar-mensagem" class="btn btn-primary">Fechar</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group text-center mt-3">
+        <a href="dashboard.html" class="btn btn-secondary">Voltar ao Painel</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK (Atualizado para versão 9.x com compatibilidade ) -->
+  <script type="module" type="module" src="../../js/firebase-config.ts"></script>
+
+  <!-- Script de lógica da página de detalhes -->
+  <script src="../../js/detalhe-monitor.js"></script>
+  <script>
+    // Função de logout
+    function logout() {
+      if (confirm('Tem certeza que deseja sair do sistema?')) {
+        // Limpar dados de sessão se houver
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirecionar para a página de login
+        window.location.href = '../../index.html';
+      }
+    }
+  </script>
+    <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 VampTech Ltda. Todos os direitos reservados.</p>
+</body>
+</html>
+
+

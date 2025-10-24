@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://saidabase.vercel.app https://sistema-de-autorizacoes.firebaseapp.com https://sistema-de-autorizacoes.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.googleapis.com wss:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.googleusercontent.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'self' https://www.google.com https://www.gstatic.com;">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primeiro Acesso - Sistema de Autorizações Digitais</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9));
+    }
+
+    .background-container {
+      position: fixed;
+      width: 90%;
+      max-width: 800px;
+      height: 100vh;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+      background: url('content.png') center/cover;
+      filter: blur(2px);
+    }
+
+    .header {
+      width: 90%;
+      max-width: 800px;
+      margin: 2rem auto;
+      text-align: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .main-container {
+      width: 90%;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin: 1rem 0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+
+    .btn-primary {
+      background: #e63946;
+      color: white;
+      padding: 1rem;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
+      font-weight: bold;
+      transition: opacity 0.3s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .header-logo {
+      max-width: 150px;
+      margin-bottom: 1rem;
+    }
+
+    .alert-danger, .alert-success {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .alert-danger {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+
+    .alert-success {
+      color: #155724;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+    }
+
+    .password-requirements {
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .header, .main-container {
+        width: 95%;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-container"></div>
+
+  <header class="header">
+    <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="header-logo">
+    <h1 class="header-title">Sistema de Autorizações Digitais</h1>
+  </header>
+
+  <div class="main-container">
+    <div class="card">
+      <h2 class="card-title">Configuração de Senha - Primeiro Acesso</h2>
+      
+      <div id="alert-message" class="alert-danger"></div>
+      <div id="success-message" class="alert-success"></div>
+      
+      <p>Bem-vindo ao seu primeiro acesso! Por favor, configure sua senha personalizada para continuar.</p>
+      
+      <form id="password-form">
+        <div class="form-group">
+          <label for="new-password" class="form-label">Nova Senha</label>
+          <input type="password" id="new-password" name="new-password" class="form-control" placeholder="Digite sua nova senha" required>
+          <div class="password-requirements">
+            A senha deve ter pelo menos 6 caracteres.
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirm-password" class="form-label">Confirmar Senha</label>
+          <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="Confirme sua nova senha" required>
+        </div>
+        
+        <button type="submit" class="btn-primary">Salvar Senha</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordForm = document.getElementById('password-form');
+      const alertMessage = document.getElementById('alert-message');
+      const successMessage = document.getElementById('success-message');
+      
+      // Verificar se há um perfil temporário no localStorage
+      const tempProfile = localStorage.getItem('temp_profile');
+      
+      if (!tempProfile) {
+        // Redirecionar para a página de login se não houver perfil temporário
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      passwordForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        
+        // Validar senha
+        if (newPassword.length < 6) {
+          showAlert('A senha deve ter pelo menos 6 caracteres.', 'danger');
+          return;
+        }
+        
+        // Verificar se as senhas coincidem
+        if (newPassword !== confirmPassword) {
+          showAlert('As senhas não coincidem. Por favor, tente novamente.', 'danger');
+          return;
+        }
+        
+        // Obter usuários do localStorage
+        const users = JSON.parse(localStorage.getItem('users')) || {};
+        
+        // Atualizar senha do usuário
+        if (users[tempProfile]) {
+          users[tempProfile].password = newPassword;
+          users[tempProfile].passwordSet = true;
+          users[tempProfile].passwordSetDate = new Date().toISOString();
+          
+          // Salvar no localStorage
+          localStorage.setItem('users', JSON.stringify(users));
+          
+          // Mostrar mensagem de sucesso
+          showAlert('Senha configurada com sucesso! Redirecionando para o login...', 'success');
+          
+          // Limpar perfil temporário
+          localStorage.removeItem('temp_profile');
+          
+          // Redirecionar para a página de login após 3 segundos
+          setTimeout(function() {
+            window.location.href = 'index.html';
+          }, 3000);
+        } else {
+          showAlert('Erro ao configurar senha. Perfil não encontrado.', 'danger');
+        }
+      });
+      
+      function showAlert(message, type) {
+        if (type === 'danger') {
+          alertMessage.textContent = message;
+          alertMessage.style.display = 'block';
+          successMessage.style.display = 'none';
+          
+          // Esconder a mensagem após 5 segundos
+          setTimeout(function() {
+            alertMessage.style.display = 'none';
+          }, 5000);
+        } else if (type === 'success') {
+          successMessage.textContent = message;
+          successMessage.style.display = 'block';
+          alertMessage.style.display = 'none';
+        }
+      }
+    });
+  </script>
+    <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 VampTech Ltda. Todos os direitos reservados.</p>
+</body>
+</html>

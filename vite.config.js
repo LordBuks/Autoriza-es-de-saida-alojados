@@ -19,6 +19,27 @@ export default defineConfig({
         // Exemplo: 'outro_dashboard': resolve(__dirname, 'templates/outro/dashboard.html'),
       },
     },
-    sourcemap: false
+    sourcemap: false,
+    rollupOptions: {
+      external: [
+        '/js/atleta.js',
+        '/js/solicitar.js',
+        '/js/consultar.js',
+        '/js/monitor.js',
+        '/js/servico-social.js',
+        '/js/supervisor.js',
+        '/js/detalhe-monitor.js',
+        '/js/detalhe-servico-social.js',
+        '/js/detalhe-supervisor.js',
+        '/js/login.ts',
+        '/js/firebase-config.ts',
+        '/js/security-service.ts',
+        '/js/autorizacao-service.ts',
+        '/js/autorizacao-service.js',
+        '/js/pdf-service.js',
+        '/js/whatsapp-service.js',
+        '/js/auditoria-service.js'
+      ]
+    }
   }
 })

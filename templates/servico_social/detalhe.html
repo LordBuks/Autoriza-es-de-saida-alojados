@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://saidabase.vercel.app https://sistema-de-autorizacoes.firebaseapp.com https://sistema-de-autorizacoes.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.googleapis.com wss:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.googleusercontent.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'self' https://www.google.com https://www.gstatic.com;">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhe da Solicitação - SC Internacional</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="header-logo">
+    <h1 class="header-title">Sistema de Autorizações Digitais</h1>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title">Detalhes da Solicitação</h2>
+      
+      <div id="detalhe-solicitacao">
+        <div class="auth-details">
+          <h3>Dados do Atleta</h3>
+          <p><strong>Nome:</strong> <span id="nome-atleta">Carregando...</span></p>
+          <p><strong>Categoria:</strong> <span id="categoria-atleta">Carregando...</span></p>
+          <p><strong>Data de Nascimento:</strong> <span id="data-nascimento">Carregando...</span></p>
+          <p><strong>Telefone:</strong> <span id="telefone-atleta">Carregando...</span></p>
+          
+          <h3>Dados da Solicitação</h3>
+          <p><strong>Data de Saída:</strong> <span id="data-saida">Carregando...</span></p>
+          <p><strong>Horário de Saída:</strong> <span id="horario-saida">Carregando...</span></p>
+          <p><strong>Data de Retorno:</strong> <span id="data-retorno">Carregando...</span></p>
+          <p><strong>Horário de Retorno:</strong> <span id="horario-retorno">Carregando...</span></p>
+          <p><strong>Motivo/Destino:</strong> <span id="motivo-destino">Carregando...</span></p>
+          
+          <h3>Dados do Responsável</h3>
+          <p><strong>Nome:</strong> <span id="nome-responsavel">Carregando...</span></p>
+          <p><strong>Telefone:</strong> <span id="telefone-responsavel">Carregando...</span></p>
+          
+          <h3>Status da Solicitação</h3>
+          <p><strong>Status Supervisor:</strong> <span id="status-supervisor" class="badge badge-approved">Aprovado</span></p>
+          <p><strong>Data da Aprovação:</strong> <span id="data-aprovacao-supervisor">Carregando...</span></p>
+          <p><strong>Status Atual:</strong> <span id="status-atual" class="badge badge-pending">Aguardando Validação</span></p>
+        </div>
+        
+        <div class="auth-actions">
+          <button id="btn-enviar-link-pais" class="btn btn-primary">Enviar Link aos Pais</button>
+          <button id="btn-ver-link-enviado" class="btn btn-info" style="display: none;">Ver Link Enviado</button>
+          <button id="btn-definir-status-final" class="btn btn-success" style="display: none;">Definir Status Final</button>
+          <button id="btn-gerar-pdf" class="btn btn-secondary">Gerar Relatório PDF</button>
+        </div>
+      </div>
+      
+      <div id="mensagem-whatsapp" class="card" style="display: none;">
+        <h3 class="card-title">Mensagem para o Responsável</h3>
+        <div class="form-group">
+          <textarea id="texto-whatsapp" class="form-control" rows="10" readonly></textarea>
+        </div>
+        <div class="form-group text-center">
+          <button id="btn-copiar" class="btn btn-primary">Copiar Mensagem</button>
+          <button id="btn-abrir-whatsapp" class="btn btn-primary">Abrir WhatsApp</button>
+          <button id="btn-fechar-mensagem" class="btn btn-secondary">Fechar</button>
+        </div>
+      </div>
+      
+        <div id="modal-link-enviado" style="display: none;" class="card">
+          <h3 class="card-title">Link Enviado aos Pais</h3>
+          <div class="form-group">
+            <label for="link-pais-display" class="form-label">Link gerado:</label>
+            <textarea id="link-pais-display" class="form-control" rows="3" readonly></textarea>
+          </div>
+          <div class="form-group">
+            <label for="preview-link" class="form-label">Pré-visualização:</label>
+            <iframe id="preview-link" style="width: 100%; height: 400px; border: 1px solid #ccc;"></iframe>
+          </div>
+          <div class="form-group text-center">
+            <button id="btn-copiar-link" class="btn btn-primary">Copiar Link</button>
+            <button id="btn-fechar-link" class="btn btn-secondary">Fechar</button>
+          </div>
+        </div>
+      
+      <div id="modal-status-final" style="display: none;" class="card">
+        <h3 class="card-title">Definir Status Final</h3>
+        <p>Com base na decisão dos pais, defina o status final da autorização:</p>
+        <div class="form-group">
+          <label for="observacao-final" class="form-label">Observação (opcional):</label>
+          <textarea id="observacao-final" class="form-control" rows="3" placeholder="Adicione uma observação sobre a decisão final..."></textarea>
+        </div>
+        <div class="form-group text-center">
+          <button id="btn-aprovar-final" class="btn btn-success">Aprovar Autorização</button>
+          <button id="btn-reprovar-final" class="btn btn-danger" style="margin-left: 10px;">Reprovar Autorização</button>
+          <button id="btn-cancelar-final" class="btn btn-secondary" style="margin-left: 10px;">Cancelar</button>
+        </div>
+      </div>
+      
+      <div id="modal-observacao" style="display: none;" class="card">
+        <h3 class="card-title">Adicionar Observação</h3>
+        <div class="form-group">
+          <label for="observacao" class="form-label">Observação</label>
+          <textarea id="observacao" class="form-control" rows="3" placeholder="Adicione uma observação sobre esta decisão"></textarea>
+        </div>
+        <div class="form-group text-center">
+          <button id="btn-confirmar" class="btn btn-primary">Confirmar</button>
+          <button id="btn-cancelar" class="btn btn-secondary">Cancelar</button>
+        </div>
+      </div>
+      
+      <div class="form-group text-center mt-3">
+        <a href="dashboard.html" class="btn btn-secondary">Voltar ao Painel</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script type="module" type="module" src="../../js/firebase-config.ts"></script>
+  <script type="module" src="../../js/autorizacao-service.js"></script>
+  <script src="../../js/pdf-service.js"></script>
+  <script src="../../js/whatsapp-service.js"></script>
+  <script src="../../js/detalhe-servico-social-corrigido.js"></script>
+  <script>
+    // Função de logout
+    function logout() {
+      if (confirm(\'Tem certeza que deseja sair do sistema?\')) {
+        // Limpar dados de sessão se houver
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirecionar para a página de login
+        window.location.href = \'../../index.html\';
+      }
+    }
+  </script>
+    <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 VampTech Ltda. Todos os direitos reservados.</p>
+</body>
+</html>
+
+

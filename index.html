@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Controle de Autorizações - Login</title>
+  <link rel="stylesheet" href="css/login-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+
+
+  <!-- Firebase SDK (Atualizado para versão 9.x com compatibilidade  ) -->
+  <!-- Removido: O Vite e os módulos TS/JS cuidarão das importações do Firebase -->
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo-section">
+        <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="logo">
+        <h1 class="system-title">Sistema de Controle de Autorizações</h1>
+      </div>
+      <div class="login-form-section">
+        <h2 class="login-title">Login</h2>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="email@inter.com" required>
+          </div>
+          <div class="form-group">
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+          </div >
+          <button type="submit" class="login-btn">
+            <span id="loginBtnText">Entrar</span>
+            <i id="loginSpinner" class="fas fa-spinner fa-spin" style="display: none;"></i>
+          </button>
+        </form>
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+      </div>
+      <div class="social-service-block">
+        <img src="https://imgur.com/HIsH9X5.png" alt="Logo Serviço Social" class="footer-social-logo">
+        <p>Sistema de gerenciamento de autorizações</p>
+        <p>Departamento de Serviço Social</p>
+      </div>
+    </div>
+    <footer class="login-footer">
+      <p>© 2025 TechVamp</p>
+    </footer>
+  </div>
+
+  <!-- Firebase Config -->
+  <script type="module" src="js/firebase-config.ts"></script>
+  <!-- Security Service -->
+  <script type="module" src="js/security-service.ts"></script>
+  <!-- Login Script -->
+  <script type="module" src="js/login.ts"></script>
+</body>
+</html>
+
+

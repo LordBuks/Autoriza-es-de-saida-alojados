@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Serviço Social - SC Internacional</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  
+
+
+  <!-- Firebase SDK (Removido para evitar duplicação, agora é carregado via módulo) -->
+  <style>
+    /* Estilos customizados para os botões */
+    .btn-primary {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white !important;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white !important;
+    }
+
+    .btn-logout {
+      background-color: #5a5d5a;
+      border-color: #28a745;
+      color: white !important;
+    }
+
+    .btn-logout:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .btn {
+      display: block; /* Mantém o botão como um bloco */
+      padding: 12px;
+      text-align: center; /* Centraliza o texto dentro do botão */
+      text-decoration: none;
+      border-radius: 4px; /* Cantos arredondados dos botões */
+      font-weight: bold;
+      white-space: nowrap;
+      box-sizing: border-box;
+      /* margin: 8px 0; REMOVIDO daqui, pois o margin será controlado pelo Flexbox no .form-group */
+      cursor: pointer;
+      border: none;
+      font-size: 1rem; /* Tamanho da fonte dos botões */
+    }
+
+    /* Nova classe para os botões do dashboard */
+    .btn-dashboard-narrow {
+      width: 600px; /* Define a largura FIXA dos botões */
+      /* margin: 8px auto; REMOVIDO daqui, pois o centralização será controlada pelo Flexbox no .form-group */
+    }
+
+    .form-group {
+      margin-bottom: 20px; /* Mantém o espaçamento entre os grupos de formulário */
+      display: flex; /* Torna o form-group um container flexível */
+      justify-content: center; /* Centraliza os itens (botões) horizontalmente */
+      align-items: center; /* Centraliza os itens verticalmente (se houver espaço) */
+      padding: 8px 0; /* Adiciona um padding vertical para espaçamento entre os botões */
+    }
+
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 45px;
+      background-color: #dc3545;
+      color: white;
+      border-radius: 4px; /* Adicionado cantos arredondados */
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem; /* Tamanho da fonte para "Bem-vindo, Atleta" */
+    }
+
+    .logout-btn {
+      background-color: #5a5d5a;
+      border-color: #28a745;
+      color: white !important;
+    }
+
+    .logout-btn:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    /* Estilos para o card do rodapé */
+    .footer-info-card {
+      max-width: 800px; /* Largura menor para o card do rodapé */
+      margin: 20px auto; /* Centraliza o card */
+      text-align: center; /* Centraliza o conteúdo dentro do card */
+    }
+
+    .footer-info-card .footer-logo {
+      height: 60px; /* Altura menor para a imagem do rodapé */
+      margin-bottom: 10px;
+    }
+
+    .footer-info-card p {
+      font-size: 0.9rem; /* Tamanho da fonte para o texto do rodapé (exemplo de diminuição) */
+      margin-bottom: 5px; /* Espaçamento entre os parágrafos */
+    }
+
+  </style>
+</head>
+<body>
+  <header class="header">
+    <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="header-logo">
+    <h1 class="header-title">Sistema de Autorizações Digitais</h1>
+  </header>
+
+  <!-- Barra de navegação com informações do usuário e logout -->
+  <div class="container"> 
+    <div class="header-nav">
+      <div class="user-info">
+        <span><b>Bem-vindo, Serviço Social</b></span>
+      </div>
+      <div>
+        <button onclick="logout()" class="logout-btn">Sair</button>
+      </div>
+    </div>
+  </div> 
+
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title">Painel do Serviço Social</h2>
+      <p>Bem-vindo ao painel do serviço social. Aqui você pode gerenciar as solicitações de autorização pré-aprovadas pelos supervisores.</p>
+      
+      <div class="alert alert-info">
+        <strong>Atenção:</strong> Você é responsável pela segunda etapa de aprovação das solicitações. Clique em Ver Detalhes para visualizar a solicitação e após clique em Enviar Link para os Pais e aguarde o retorno para aprovar ou reprovar a solicitação.
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Solicitações Pré-Aprovadas</h2>
+      <div id="solicitacoes-pre-aprovadas">
+        <p class="text-center">Carregando solicitações pré-aprovadas...</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Detalhes da Solicitação</h2>
+      <div id="detalhes-solicitacao" style="display: none;">
+        <div class="row">
+          <div class="col-md-6">
+            <h3>Informações do Atleta</h3>
+            <p><strong>ID da Solicitação:</strong> <span id="solicitacao-id"></span></p>
+            <p><strong>Nome:</strong> <span id="nome-atleta"></span></p>
+            <p><strong>Categoria:</strong> <span id="categoria-atleta"></span></p>
+            <p><strong>Telefone:</strong> <span id="telefone-atleta"></span></p>
+          </div>
+          <div class="col-md-6">
+            <h3>Informações do Responsável</h3>
+            <p><strong>Nome:</strong> <span id="nome-responsavel"></span></p>
+            <p><strong>Telefone:</strong> <span id="telefone-responsavel"></span></p>
+          </div>
+        </div>
+        
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <h3>Detalhes da Saída</h3>
+            <p><strong>Data/Hora Saída:</strong> <span id="data-saida"></span> às <span id="horario-saida"></span></p>
+            <p><strong>Data/Hora Retorno:</strong> <span id="data-retorno"></span> às <span id="horario-retorno"></span></p>
+            <p><strong>Motivo/Destino:</strong> <span id="motivo-destino"></span></p>
+          </div>
+        </div>
+        
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <h3>Status da Solicitação</h3>
+            <p><strong>Status Supervisor:</strong> <span id="status-supervisor" class="badge"></span></p>
+            <p><strong>Status Serviço Social:</strong> <span id="status-servico-social" class="badge"></span></p>
+            <p><strong>Status Final:</strong> <span id="status-final" class="badge"></span></p>
+            <p><strong>Status Pais:</strong> <span id="status-pais" class="badge"></span></p>
+          </div>
+        </div>
+        
+        <!-- Botões para as funcionalidades -->
+        <div class="mt-3 button-group">
+          <button id="btn-enviar-link" class="btn btn-primary">Enviar Link aos Pais</button>
+          <button id="btn-status-final" class="btn btn-success">Definir Status Final</button>
+          <button id="btn-gerar-pdf" class="btn btn-danger">Gerar Relatório PDF</button>
+        </div>
+        
+        <!-- Container para botões de ação específicos do Serviço Social -->
+        <div id="acoes-servico-social" class="mt-3">
+          <!-- Botões de aprovar/reprovar serão adicionados dinamicamente aqui -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Histórico de Validações</h2>
+      <div class="form-group">
+        <label for="filtro-status" class="form-label">Filtrar por Status</label>
+        <select id="filtro-status" class="form-control">
+          <option value="todos">Todos</option>
+          <option value="aprovado">Aprovado</option>
+          <option value="reprovado">Reprovado</option>
+        </select>
+      </div>
+      
+      <div id="historico-validacoes">
+        <p class="text-center">Carregando histórico...</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button onclick="logout()" class="btn btn-logout btn-dashboard-narrow">Sair do Sistema</button>
+    </div>
+
+  </div>
+
+  <!-- Firebase SDK (Removido para evitar duplicação, agora é carregado via módulo) -->
+
+  <!-- Bibliotecas para PDF e Hash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
+  <!-- Configuração do Firebase (IMPORTANTE: deve ser carregado antes dos outros serviços) -->
+  <script type="module" src="../../js/firebase-config.ts"></script>
+
+  <!-- Serviços de Auditoria e PDF -->
+  <script src="../../js/auditoria-service.js" type="module"></script>
+  <script src="../../js/pdf-service.js" type="module"></script>
+  <script src="../../js/servico-social.js" type="module"></script>
+  <script>
+    // Função de logout
+    function logout() {
+      if (confirm('Tem certeza que deseja sair do sistema?')) {
+        // Limpar dados de sessão se houver
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirecionar para a página de login
+        window.location.href = '../../index.html';
+      }
+    }
+  </script>
+    <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 VampTech Ltda. Todos os direitos reservados.</p>
+</body>
+</html>
+
+
+
+
+  <script src="../../js/whatsapp-service.js" type="module"></script>
+

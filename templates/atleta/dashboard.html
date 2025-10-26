@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://saidabase.vercel.app https://sistema-de-autorizacoes.firebaseapp.com https://sistema-de-autorizacoes.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.googleapis.com wss:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.googleusercontent.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'self' https://www.google.com https://www.gstatic.com;">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Atleta - SC Internacional</title>
+  <style>
+    /* Estilos customizados para os botões */
+    .btn-primary {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white !important;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white !important;
+    }
+
+    .btn-logout {
+      background-color: #5a5d5a;
+      border-color: #28a745;
+      color: white !important;
+    }
+
+    .btn-logout:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .btn {
+      display: block;
+      padding: 12px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-sizing: border-box;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .button-group-dashboard .btn {
+      display: inline-block;
+    }
+
+    .btn-dashboard-narrow {
+      width: 280px;
+      margin: 8px auto;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    /* A regra 'justify-content: space-between' é mantida para distribuir os 3 elementos */
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 20px;
+      background-color: #dc3545;
+      color: white;
+      border-radius: 4px;
+    }
+
+    .user-info {
+      font-size: 1.4rem;
+    }
+
+    .logout-btn {
+      background-color: #5a5d5a;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .logout-btn:hover {
+      background-color: #218838;
+    }
+
+    .footer-info-card {
+      max-width: 800px;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .footer-info-card .footer-logo {
+      height: 60px;
+      margin-bottom: 10px;
+    }
+
+    .footer-info-card p {
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="header-logo">
+    <h1 class="header-title"></h1>
+  </header>
+
+  <div class="container">
+    <div class="header-nav">
+      <!-- MUDANÇA 1: Adicionado um 'div' vazio como espaçador à esquerda -->
+      <div></div>
+
+      <!-- MUDANÇA 2: O estilo inline foi removido daqui -->
+      <div class="user-info">
+        <span><b>Sistema de Autorizações Digitais</b></span>
+      </div>
+
+      <div>
+        <button onclick="logout( )" class="logout-btn">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title">Bem-vindo, Atleta</h2>
+      <p>Utilize este sistema para solicitar a sua autorização de saída do alojamento. Após concluir a solicitação voce poderár consultar o status com o código gerado.</p>
+      <div class="alert alert-info">
+        <strong>Atenção:</strong> Todas as solicitações passam por aprovação do supervisor e do serviço social, além da confirmação do seu responsável.
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="card-title">O que deseja fazer?</h2>
+      <div class="button-group-dashboard">
+        <a href="solicitar.html" class="btn btn-primary btn-dashboard-narrow">Solicitar Nova Autorização</a>
+        <a href="consultar.html" class="btn btn-primary btn-dashboard-narrow">Consultar Solicitações</a>
+        <button onclick="logout()" class="btn btn-logout btn-dashboard-narrow">Sair do Sistema</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="card-title">Informações Legais</h3>
+      <ul>
+        Todo processo de autorizações está de acordo com as leis:
+        <p>
+        <div></div>
+        <li>Lei das assinaturas eletrônicas (Assinatura eletrônica simples - Lei nº 14.063/2020 Art. 4º)</li>
+        <li>Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018)</li>
+        <li>Lei do passe livre (Lei Pelé - Lei nº 9.615/1998)</li>
+        <li>Estatuto da Criança e do Adolescente (ECA - Lei nº 8.069/90 )</li>
+      </ul>
+      <p>Todas as autorizações são registradas digitalmente, com carimbo temporal, hash de integridade e armazenamento seguro.</p>
+    </div>
+    <div class="card footer-info-card">
+      <div style="text-align: center;">
+        <footer>
+          <img src="https://imgur.com/HIsH9X5.png" alt="Logo SC Internacional" class="footer-logo">
+          <p>Sistema de gerenciamento de autorizações</p>
+          <p>Departamento de Serviço Social.</p>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- <script src="../../js/atleta.js" type="module"></script> Removido pois o arquivo não existe e a lógica de logout já está no script inline. -->
+  <script>
+    function logout( ) {
+      if (confirm('Tem certeza que deseja sair do sistema?')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '../../index.html';
+      }
+    }
+  </script>
+  <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 VampTech</p>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Monitor - SC Internacional</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  
+  <!-- Content Security Policy (CSP) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://saidabase.vercel.app https://sistema-de-autorizacoes.firebaseapp.com https://sistema-de-autorizacoes.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.gstatic.com https://*.googleapis.com wss:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.googleusercontent.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'self' https://www.google.com https://www.gstatic.com;">
+
+  <!-- Firebase SDK (Atualizado para versão 9.x com compatibilidade  ) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <style>
+    /* Estilos customizados para os botões */
+    .btn-primary {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white !important;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white !important;
+    }
+
+    .btn-logout {
+      background-color: #5a5d5a;
+      border-color: #28a745;
+      color: white !important;
+    }
+
+    .btn-logout:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .btn {
+      display: block; /* Mantém o botão como um bloco */
+      padding: 12px;
+      text-align: center; /* Centraliza o texto dentro do botão */
+      text-decoration: none;
+      border-radius: 4px; /* Cantos arredondados dos botões */
+      font-weight: bold;
+      white-space: nowrap;
+      box-sizing: border-box;
+      /* margin: 8px 0; REMOVIDO daqui, pois o margin será controlado pelo Flexbox no .form-group */
+      cursor: pointer;
+      border: none;
+      font-size: 1rem; /* Tamanho da fonte dos botões */
+    }
+
+    /* Nova classe para os botões do dashboard */
+    .btn-dashboard-narrow {
+      width: 600px; /* Define a largura FIXA dos botões */
+      /* margin: 8px auto; REMOVIDO daqui, pois o centralização será controlada pelo Flexbox no .form-group */
+    }
+
+    .form-group {
+      margin-bottom: 20px; /* Mantém o espaçamento entre os grupos de formulário */
+      display: flex; /* Torna o form-group um container flexível */
+      justify-content: center; /* Centraliza os itens (botões) horizontalmente */
+      align-items: center; /* Centraliza os itens verticalmente (se houver espaço) */
+      padding: 8px 0; /* Adiciona um padding vertical para espaçamento entre os botões */
+    }
+
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 45px;
+      background-color: #dc3545;
+      color: white;
+      border-radius: 4px; /* Adicionado cantos arredondados */
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem; /* Tamanho da fonte para "Bem-vindo, Atleta" */
+    }
+
+    .logout-btn {
+      background-color: #5a5d5a;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .logout-btn:hover {
+      background-color: #218838;
+    }
+
+    /* Estilos para o card do rodapé */
+    .footer-info-card {
+      max-width: 800px; /* Largura menor para o card do rodapé */
+      margin: 20px auto; /* Centraliza o card */
+      text-align: center; /* Centraliza o conteúdo dentro do card */
+    }
+
+    .footer-info-card .footer-logo {
+      height: 60px; /* Altura menor para a imagem do rodapé */
+      margin-bottom: 10px;
+    }
+
+    .footer-info-card p {
+      font-size: 0.9rem; /* Tamanho da fonte para o texto do rodapé (exemplo de diminuição) */
+      margin-bottom: 5px; /* Espaçamento entre os parágrafos */
+    }
+
+  </style>
+</head>
+<body>
+  <header class="header">
+    <img src="https://i.imgur.com/odzcc03.png" alt="Logo SC Internacional" class="header-logo">
+    <h1 class="header-title">Sistema de Autorizações Digitais</h1>
+  </header>
+
+  <!-- Barra de navegação com informações do usuário e logout -->
+  <div class="container"> 
+    <div class="header-nav">
+      <div class="user-info">
+        <span><b>Bem-vindo, Monitor</b></span>
+      </div>
+      <div>
+        <button onclick="logout()" class="logout-btn">Sair</button>
+      </div>
+    </div>
+  </div> 
+
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title">Painel do Monitor</h2>
+      <p>Bem-vindo ao painel de monitoramento. Aqui você pode visualizar todas as solicitações de autorização e seus status.</p>
+      
+      <div class="alert alert-info">
+        <strong>Atenção:</strong> Você tem acesso a todas as informações do sistema, com o mesmo nível de acesso do Serviço Social.
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Visão Geral</h2>
+      <div class="row" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+        <div class="stat-card" style="flex: 1; background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 0 5px; text-align: center;">
+          <h3 style="margin-top: 0;">Pendentes</h3>
+          <p id="count-pendentes" style="font-size: 24px; font-weight: bold; color: #ffc107;">0</p>
+        </div>
+        <div class="stat-card" style="flex: 1; background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 0 5px; text-align: center;">
+          <h3 style="margin-top: 0;">Aprovadas</h3>
+          <p id="count-aprovadas" style="font-size: 24px; font-weight: bold; color: #28a745;">0</p>
+        </div>
+        <div class="stat-card" style="flex: 1; background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 0 5px; text-align: center;">
+          <h3 style="margin-top: 0;">Reprovadas</h3>
+          <p id="count-reprovadas" style="font-size: 24px; font-weight: bold; color: #dc3545;">0</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Solicitações Pré-Aprovadas</h2>
+      <div id="solicitacoes-pre-aprovadas">
+        <p class="text-center">Carregando solicitações pré-aprovadas...</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Todas as Solicitações</h2>
+      <div class="form-group">
+        <label for="filtro-status" class="form-label">Filtrar por Status</label>
+        <select id="filtro-status" class="form-control">
+          <option value="todos">Todos</option>
+          <option value="pendente">Pendente</option> 
+          <option value="pre-aprovado">Pré-Aprovado</option>
+          <option value="aprovado">Aprovado</option>
+          <option value="reprovado">Reprovado</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="filtro-categoria" class="form-label">Filtrar por Categoria</label>
+        <select id="filtro-categoria" class="form-control">
+          <option value="todas">Todas</option>
+          <option value="Sub14">Sub14</option>
+          <option value="Sub15">Sub15</option>
+          <option value="Sub16">Sub16</option>
+          <option value="Sub17">Sub17</option>
+          <option value="Sub20">Sub20</option>
+        </select>
+      </div>
+      
+      <div id="todas-solicitacoes">
+        <p class="text-center">Carregando solicitações...</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Arquivos</h2>
+      <div class="form-group">
+        <label for="filtro-data" class="form-label">Filtrar por Data</label>
+        <input type="date" id="filtro-data" class="form-control">
+      </div>
+      
+      <div id="arquivos">
+        <p class="text-center">Carregando arquivos...</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button onclick="logout()" class="btn btn-logout btn-dashboard-narrow">Sair do Sistema</button>
+    </div>
+
+  </div>
+
+  <!-- Firebase Config (Adicionado - inicializa firebaseService  ) -->
+  <script type="module" src="../../js/firebase-config.ts"></script>
+
+  <!-- Script de lógica do painel -->
+  <script src="../../js/monitor.js" type="module"></script>
+  <script>
+    // Função de logout
+    function logout() {
+      if (confirm('Tem certeza que deseja sair do sistema?')) {
+        // Limpar dados de sessão se houver
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirecionar para a página de login
+        window.location.href = '../../index.html';
+      }
+    }
+  </script>
+    <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #6c757d;">© 2025 TechVamp</p>
+</body>
+</html>
+
+
